@@ -1,0 +1,67 @@
+# Picture Test
+
+Приложение-квиз: пользователю показывается изображение и варианты ответа,
+ровно один из которых правильный. Изображения можно загружать через админку
+(хранятся локально) или указывать внешним URL. Результаты пользователей не
+сохраняются — в конце показывается только счёт и разбор ответов.
+
+## Стек
+
+| Слой        | Технологии                                                        |
+| ----------- | ----------------------------------------------------------------- |
+| Backend     | Python 3.12, [uv](https://docs.astral.sh/uv/), FastAPI, SQLAlchemy 2.0, SQLite |
+| Frontend    | React 18, Vite, MUI v6, React Router, axios                       |
+| Развёртывание | Docker, Docker Compose, nginx                                   |
+
+## Возможности
+
+- **Публичный тест** (`/`): по одному вопросу, картинка + варианты, прогресс,
+  финальный экран со счётом в процентах и разбором ответов.
+- **Админка** (`/admin`): HTTP Basic, CRUD вопросов, загрузка изображений
+  drag&drop или по URL, редактор вариантов с выбором правильного.
+- **Тема** светлая/тёмная (запоминается в браузере), адаптивный интерфейс.
+- **API**: см. [docs/API.md](docs/API.md).
+
+## Быстрый старт (Docker)
+
+```bash
+cp .env.example .env      # задайте ADMIN_USER / ADMIN_PASSWORD
+./scripts/deploy.sh       # или: make up
+./scripts/seed.sh         # демо-вопросы (необязательно)
+```
+
+- Веб-интерфейс: http://localhost:8080
+- Админка: http://localhost:8080/admin
+
+## Локальная разработка
+
+Требуются `uv`, Node.js 18+.
+
+```bash
+./scripts/dev.sh          # backend :8000 + frontend :5173
+```
+
+Подробнее — [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+## Документация
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — устройство и модель данных
+- [docs/API.md](docs/API.md) — эндпоинты, примеры запросов
+- [docs/ADMIN.md](docs/ADMIN.md) — работа с админкой
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — docker compose, тома, бэкапы
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — локальный запуск, тесты, линтеры
+- [AGENTS.md](AGENTS.md) — команды для автоматизированных ассистентов
+
+## Структура
+
+```
+backend/    FastAPI-приложение (app/, seed.py)
+frontend/   React + MUI SPA (src/)
+scripts/    deploy / stop / logs / seed / backup / restore / dev
+docs/       документация
+docker-compose.yml
+```
+
+## Лицензия
+
+MIT

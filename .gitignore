@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ruff_cache/
+*.db
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/.env
+
+# Node
+node_modules/
+frontend/dist/
+
+# Env / secrets
+.env
+
+# Backups
+backups/*
+!backups/.gitkeep
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
