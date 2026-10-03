@@ -118,11 +118,18 @@ export default function AdminPage() {
             Всего вопросов: {questions.length}
           </Typography>
         </Box>
-        <Stack direction="row" spacing={1}>
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          flexWrap="wrap"
+          sx={{ width: { xs: "100%", sm: "auto" } }}
+        >
           <Button
             startIcon={<RefreshRoundedIcon />}
             onClick={load}
             color="inherit"
+            sx={{ flex: { xs: 1, sm: "initial" } }}
           >
             Обновить
           </Button>
@@ -133,6 +140,7 @@ export default function AdminPage() {
             variant="contained"
             startIcon={<AddRoundedIcon />}
             onClick={openCreate}
+            sx={{ flex: { xs: 1, sm: "initial" } }}
           >
             Добавить
           </Button>

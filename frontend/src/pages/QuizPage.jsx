@@ -273,7 +273,12 @@ export default function QuizPage() {
           <Typography variant="subtitle2" color="text.secondary">
             Вопрос {index + 1} из {questions.length}
           </Typography>
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            alignItems={{ xs: "flex-start", sm: "center" }}
+            spacing={{ xs: 0.5, sm: 1 }}
+            sx={{ width: { xs: "100%", sm: "auto" } }}
+          >
             <Typography variant="subtitle2" color="text.secondary">
               Отвечено: {Object.keys(feedback).length}
             </Typography>
@@ -286,6 +291,13 @@ export default function QuizPage() {
                 label={`Серия ${rewards.streak}`}
               />
             )}
+            <Stack
+              direction="row"
+              useFlexGap
+              flexWrap="wrap"
+              spacing={{ xs: 0.5, sm: 1 }}
+              sx={{ width: "100%" }}
+            >
             <FormControlLabel
               sx={{ m: 0 }}
               control={
@@ -333,6 +345,7 @@ export default function QuizPage() {
                 }
               />
             </Tooltip>
+            </Stack>
           </Stack>
         </Stack>
         <LinearProgress
@@ -401,6 +414,7 @@ export default function QuizPage() {
                       </Button>
                     ) : undefined
                   }
+                  sx={{ alignItems: "flex-start", overflowWrap: "anywhere" }}
                 >
                   {currentFeedback?.is_correct
                     ? autoNextIn
