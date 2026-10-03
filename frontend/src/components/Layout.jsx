@@ -58,13 +58,13 @@ export default function Layout() {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="lg" sx={{ flex: 1, py: { xs: 3, md: 5 } }}>
+      <Container maxWidth="lg" sx={{ flex: 1, py: { xs: 2.5, md: 3 } }}>
         <Outlet />
       </Container>
 
       <Box
         component="footer"
-        sx={{ py: 3, textAlign: "center", color: "text.secondary" }}
+        sx={{ py: { xs: 2, md: 1.5 }, textAlign: "center", color: "text.secondary" }}
       >
         <Typography variant="caption">
           Picture Test · FastAPI + React MUI

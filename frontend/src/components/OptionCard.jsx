@@ -33,9 +33,13 @@ const VARIANTS = {
  * @param {"idle"|"correct"|"wrong"|"reveal"} [props.state] — состояние подсветки
  * @param {Function} props.onClick — обработчик выбора (только для state="idle")
  */
-export default function OptionCard({ letter, text, state = "idle", onClick }) {
+export default function OptionCard({ letter, text, state = "idle", onClick, animationsOn = true }) {
   const variant = state === "idle" ? null : VARIANTS[state];
   const iconColor = variant?.color;
+  const highlightedCorrect = state === "correct" || state === "reveal";
+  const answerLabel = state === "correct" || state === "wrong"
+    ? "Ваш ответ"
+    : state === "reveal" ? "Правильный ответ" : null;
 
   return (
     <Card
@@ -45,20 +49,27 @@ export default function OptionCard({ letter, text, state = "idle", onClick }) {
         bgcolor: variant
           ? (theme) => alpha(theme.palette[state === "wrong" ? "error" : "success"].main, 0.1)
           : undefined,
-        transition: "transform .15s ease, box-shadow .15s ease, border-color .2s ease",
-        "&:hover": { transform: state === "idle" ? "translateY(-2px)" : "none" },
+        transform: animationsOn && highlightedCorrect
+          ? { xs: "scale(1.03)", md: "scale(1.05)" }
+          : undefined,
+        position: highlightedCorrect ? "relative" : undefined,
+        zIndex: highlightedCorrect ? 1 : undefined,
+        transition: animationsOn
+          ? "transform .15s ease, box-shadow .15s ease, border-color .2s ease"
+          : "none",
+        "&:hover": { transform: animationsOn && state === "idle" ? "translateY(-2px)" : "none" },
       }}
     >
       <CardActionArea
         onClick={onClick}
         disabled={state !== "idle"}
-        sx={{ p: 2 }}
+        sx={{ p: highlightedCorrect ? { xs: 2.25, md: 2 } : { xs: 1.5, md: 1.25 } }}
       >
-        <Stack direction="row" alignItems="center" spacing={1.5}>
+        <Stack direction="row" alignItems="center" spacing={1.25}>
           <Box
             sx={{
-              width: 34,
-              height: 34,
+              width: highlightedCorrect ? { xs: 42, md: 46 } : { xs: 32, md: 30 },
+              height: highlightedCorrect ? { xs: 42, md: 46 } : { xs: 32, md: 30 },
               flexShrink: 0,
               borderRadius: "50%",
               display: "grid",
@@ -70,9 +81,19 @@ export default function OptionCard({ letter, text, state = "idle", onClick }) {
           >
             {letter}
           </Box>
-          <Typography sx={{ flex: 1, fontWeight: variant ? 600 : 500 }}>
-            {text}
-          </Typography>
+          <Stack sx={{ flex: 1 }} spacing={0.15}>
+            {answerLabel && (
+              <Typography variant="caption" color={highlightedCorrect ? "success.main" : "error.main"}>
+                {answerLabel}
+              </Typography>
+            )}
+            <Typography
+            sx={{
+              fontWeight: variant ? 600 : 500,
+              fontSize: highlightedCorrect ? { xs: "1.15rem", md: "1.25rem" } : undefined,
+            }}
+            >{text}</Typography>
+          </Stack>
           {variant && <variant.Icon sx={{ color: iconColor }} />}
         </Stack>
       </CardActionArea>

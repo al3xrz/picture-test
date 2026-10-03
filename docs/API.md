@@ -141,8 +141,12 @@ curl -u admin:secret -X POST http://localhost:8000/api/admin/questions \
 ```bash
 curl -u admin:secret -F "file=@photo.png;type=image/png" \
   http://localhost:8000/api/admin/upload
-# {"url": "/uploads/9f3c...png"}
+# {"url": "/uploads/9f3c...webp"}
 ```
+
+Растровые JPG, PNG и WEBP после загрузки приводятся к размеру 1600×1000 px,
+центрально кадрируются и сохраняются в WebP с качеством 85. SVG и GIF сохраняются
+в исходном формате; анимированные GIF не преобразуются.
 
 | Код | Причина                        |
 | --- | ------------------------------ |

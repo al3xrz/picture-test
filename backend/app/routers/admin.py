@@ -1,10 +1,11 @@
 """Админские эндпоинты: CRUD вопросов и загрузка изображений (HTTP Basic)."""
 
-import mimetypes
+import io
 import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from PIL import Image, ImageOps, UnidentifiedImageError
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -27,6 +28,9 @@ ALLOWED_IMAGE_TYPES = {
     "image/gif": ".gif",
     "image/svg+xml": ".svg",
 }
+NORMALIZED_TYPES = {"image/jpeg", "image/png", "image/webp"}
+NORMALIZED_SIZE = (1600, 1000)
+WEBP_QUALITY = 85
 
 
 def _next_position(db: Session) -> int:
@@ -58,6 +62,34 @@ def _apply_options(question: Question, payload: QuestionInput) -> None:
         Option(text=o.text, is_correct=o.is_correct, position=i)
         for i, o in enumerate(payload.options)
     ]
+
+
+def _normalize_raster(data: bytes, content_type: str) -> tuple[bytes, str]:
+    """Центрально кадрирует растровое изображение и сохраняет его как WebP."""
+    if content_type not in NORMALIZED_TYPES:
+        return data, ALLOWED_IMAGE_TYPES[content_type]
+
+    try:
+        with Image.open(io.BytesIO(data)) as source:
+            source.load()
+            has_alpha = "A" in source.getbands() or (
+                source.mode == "P" and "transparency" in source.info
+            )
+            image = source.convert("RGBA" if has_alpha else "RGB")
+            normalized = ImageOps.fit(
+                image,
+                NORMALIZED_SIZE,
+                method=Image.Resampling.LANCZOS,
+                centering=(0.5, 0.5),
+            )
+            output = io.BytesIO()
+            normalized.save(output, format="WEBP", quality=WEBP_QUALITY, method=6)
+            return output.getvalue(), ".webp"
+    except (UnidentifiedImageError, OSError, ValueError) as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid image file",
+        ) from exc
 
 
 @router.get("/questions", response_model=list[QuestionAdmin])
@@ -149,10 +181,7 @@ async def upload_image(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Empty file"
         )
 
-    extension = ALLOWED_IMAGE_TYPES[content_type]
-    guessed = mimetypes.guess_extension(content_type)
-    if guessed:
-        extension = guessed
+    data, extension = _normalize_raster(data, content_type)
     filename = f"{uuid.uuid4().hex}{extension}"
     destination = settings.upload_dir / filename
     destination.write_bytes(data)

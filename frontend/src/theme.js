@@ -1,6 +1,6 @@
 import { createTheme, alpha } from "@mui/material/styles";
 
-const INDIGO = "#6366F1";
+const INDIGO = "#526A8D";
 
 /**
  * Создаёт тему MUI для светлого или тёмного режима.
@@ -12,9 +12,10 @@ export function getTheme(mode) {
     palette: {
       mode,
       primary: { main: INDIGO, contrastText: "#fff" },
-      secondary: { main: "#14B8A6" },
-      success: { main: "#22C55E" },
-      error: { main: "#EF4444" },
+      secondary: { main: "#5F8F8A" },
+      success: { main: "#2F855A" },
+      error: { main: "#B54747" },
+      warning: { main: "#A06A24" },
       background: {
         default: isLight ? "#F6F7FB" : "#0B1020",
         paper: isLight ? "#FFFFFF" : "#141A2E",
@@ -31,6 +32,8 @@ export function getTheme(mode) {
       h4: { fontWeight: 700, letterSpacing: "-0.02em" },
       h5: { fontWeight: 700, letterSpacing: "-0.01em" },
       h6: { fontWeight: 700 },
+      body1: { fontSize: "1.08rem", lineHeight: 1.55 },
+      body2: { fontSize: "0.98rem", lineHeight: 1.5 },
       button: { textTransform: "none", fontWeight: 600 },
     },
     components: {
@@ -38,8 +41,8 @@ export function getTheme(mode) {
         styleOverrides: {
           body: {
             backgroundImage: isLight
-              ? `radial-gradient(1200px 600px at 100% -10%, ${alpha(INDIGO, 0.12)}, transparent), radial-gradient(900px 500px at -10% 110%, ${alpha("#14B8A6", 0.1)}, transparent)`
-              : `radial-gradient(1200px 600px at 100% -10%, ${alpha(INDIGO, 0.22)}, transparent), radial-gradient(900px 500px at -10% 110%, ${alpha("#14B8A6", 0.14)}, transparent)`,
+              ? `radial-gradient(1200px 600px at 100% -10%, ${alpha(INDIGO, 0.07)}, transparent), radial-gradient(900px 500px at -10% 110%, ${alpha("#5F8F8A", 0.06)}, transparent)`
+              : `radial-gradient(1200px 600px at 100% -10%, ${alpha(INDIGO, 0.14)}, transparent), radial-gradient(900px 500px at -10% 110%, ${alpha("#5F8F8A", 0.1)}, transparent)`,
             backgroundAttachment: "fixed",
           },
         },
